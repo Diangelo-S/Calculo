@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Solución de Ecuaciones Lineales y Cuadráticas</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    body { font-family: Arial, sans-serif; padding: 20px; }
+    canvas { max-width: 600px; margin-top: 20px; }
+    input[type="number"] { width: 60px; }
+  </style>
+</head>
+<body>
+
+  <h2>Resolución y gráfica de ecuaciones lineales y cuadráticas</h2>
+
+  <form id="equationForm">
+    <p>
+      Ecuación: <strong>ax² + bx + c</strong><br>
+      a: <input type="number" id="a" value="1"> &nbsp;
+      b: <input type="number" id="b" value="0"> &nbsp;
+      c: <input type="number" id="c" value="0">
+    </p>
+    <button type="submit">Graficar</button>
+  </form>
+
+  <p><strong>Dominio:</strong> <span id="dominio">[-20, 20]</span></p>
+  <p><strong>Rango:</strong> <span id="rango"></span></p>
+
+  <canvas id="graph" width="600" height="400"></canvas>
+
+  <script>
+    const form = document.getElementById('equationForm');
+    const ctx = document.getElementById('graph').getContext('2d');
+    let chart;
+
+    form.addEventListener('submit', function(e) {
+      e.preventDefault();
+
+      const a = parseFloat(document.getElementById('a').value);
+      const b = parseFloat(document.getElementById('b').value);
+      const c = parseFloat(document.getElementById('c').value);
+
+      const xValues = [];
+      const yValues = [];
+
+      let minY = Infinity;
+      let maxY = -Infinity;
+
+      for (let x = -20; x <= 20; x += 0.5) {
+        let y = a * x * x + b * x + c;
+        xValues.push(x);
+        yValues.push(y);
+
+        if (y < minY) minY = y;
+        if (y > maxY) maxY = y;
+      }
+
+      const rango = `[${minY.toFixed(2)}, ${maxY.toFixed(2)}]`;
+      document.getElementById('rango').textContent = rango;
+
+      if (chart) chart.destroy();
+      chart = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: xValues,
+          datasets: [{
+            label: `f(x) = ${a}x² + ${b}x + ${c}`,
+            data: yValues,
+            borderColor: 'blue',
+            fill: false,
+            tension: 0.1
+          }]
+        },
+        options: {
+          responsive: true,
+          scales: {
+            x: { title: { display: true, text: 'x' } },
+            y: { title: { display: true, text: 'f(x)' } }
+          }
+        }
+      });
+    });
+  </script>
+
+</body>
+</html>
